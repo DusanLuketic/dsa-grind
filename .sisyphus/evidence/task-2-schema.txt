@@ -1,0 +1,149 @@
+TASK 2: PRISMA SCHEMA + MIGRATION + .ENV
+==========================================
+
+COMPLETION DATE: 2026-03-13
+STATUS: COMPLETE
+
+1. SCHEMA FILE CONTENTS (prisma/schema.prisma)
+================================================
+
+// This is your Prisma schema file
+// SQLite database - NO native enums (use String with validation at ORM level)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Topic {
+  id           String   @id
+  title        String
+  slug         String   @unique
+  icon         String
+  color        String
+  order        Int
+  description  String?
+  problems     Problem[]
+  resources    Resource[]
+  sessions     StudySession[]
+}
+
+model Problem {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  difficulty  String    // EASY, MEDIUM, HARD
+  leetcodeUrl String
+  youtubeUrl  String
+  topicId     String
+  hints       String?
+  pattern     String?
+  order       Int
+  topic       Topic     @relation(fields: [topicId], references: [id])
+  progress    Progress?
+
+  @@index([topicId])
+}
+
+model Progress {
+  id           Int       @id @default(autoincrement())
+  problemId    Int       @unique
+  status       String    @default("NOT_STARTED")  // NOT_STARTED, ATTEMPTED, SOLVED, REVIEW
+  solvedAt     DateTime?
+  notes        String?
+  timeSpent    Int?
+  revisitCount Int       @default(0)
+  lastRevisit  DateTime?
+  confidence   Int?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  problem      Problem   @relation(fields: [problemId], references: [id])
+}
+
+model StudySession {
+  id             Int       @id @default(autoincrement())
+  date           DateTime  @default(now())
+  duration       Int
+  problemsSolved Int
+  topicId        String?
+  notes          String?
+  topic          Topic?    @relation(fields: [topicId], references: [id])
+
+  @@index([topicId])
+  @@index([date])
+}
+
+model Resource {
+  id          Int     @id @default(autoincrement())
+  title       String
+  url         String
+  type        String  // VIDEO, ARTICLE, COURSE, TOOL
+  source      String
+  topicId     String?
+  description String?
+  topic       Topic?  @relation(fields: [topicId], references: [id])
+
+  @@index([topicId])
+}
+
+2. .ENV FILE CONTENTS
+======================
+
+DATABASE_URL="file:./dev.db"
+
+3. DATABASE PUSH OUTPUT
+========================
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+Datasource "db": SQLite database "dev.db" at "file:./dev.db"
+
+SQLite database dev.db created at file:./dev.db
+
+Your database is now in sync with your Prisma schema. Done in 81ms
+
+4. PRISMA CLIENT GENERATION
+=============================
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+
+✔ Generated Prisma Client (v7.5.0) to .\node_modules\@prisma\client in 96ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+5. MODELS CREATED
+==================
+
+✓ Topic (String @id, slug-based)
+✓ Problem (Int @id autoincrement, with topicId foreign key)
+✓ Progress (Int @id autoincrement, with problemId unique foreign key)
+✓ StudySession (Int @id autoincrement, with optional topicId)
+✓ Resource (Int @id autoincrement, with optional topicId)
+
+6. KEY DESIGN DECISIONS
+========================
+
+- SQLite provider (no native enums)
+- Topic uses String @id (slug-based identifiers)
+- Problem, Progress, StudySession, Resource use Int @id with autoincrement
+- All enum-like fields use String type with comments for documentation
+- Progress includes createdAt/updatedAt for stats tracking
+- Proper foreign key relationships with @relation
+- Indexes on topicId and date fields for query performance
+- Optional topicId on StudySession and Resource for flexibility
+
+7. VERIFICATION
+================
+
+✓ prisma/schema.prisma created with all 5 models
+✓ .env configured with DATABASE_URL="file:./dev.db"
+✓ Database created via npx prisma db push
+✓ Prisma Client generated successfully (v7.5.0)
+✓ No validation errors
+✓ All relationships properly defined

@@ -1,0 +1,81 @@
+// This is your Prisma schema file
+// SQLite database - NO native enums (use String with validation at ORM level)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Topic {
+  id           String   @id
+  title        String
+  slug         String   @unique
+  icon         String
+  color        String
+  order        Int
+  description  String?
+  problems     Problem[]
+  resources    Resource[]
+  sessions     StudySession[]
+}
+
+model Problem {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  difficulty  String    // EASY, MEDIUM, HARD
+  leetcodeUrl String
+  youtubeUrl  String
+  topicId     String
+  hints       String?
+  pattern     String?
+  order       Int
+  topic       Topic     @relation(fields: [topicId], references: [id])
+  progress    Progress?
+
+  @@index([topicId])
+}
+
+model Progress {
+  id           Int       @id @default(autoincrement())
+  problemId    Int       @unique
+  status       String    @default("NOT_STARTED")  // NOT_STARTED, ATTEMPTED, SOLVED, REVIEW
+  solvedAt     DateTime?
+  notes        String?
+  timeSpent    Int?
+  revisitCount Int       @default(0)
+  lastRevisit  DateTime?
+  confidence   Int?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  problem      Problem   @relation(fields: [problemId], references: [id])
+}
+
+model StudySession {
+  id             Int       @id @default(autoincrement())
+  date           DateTime  @default(now())
+  duration       Int
+  problemsSolved Int
+  topicId        String?
+  notes          String?
+  topic          Topic?    @relation(fields: [topicId], references: [id])
+
+  @@index([topicId])
+  @@index([date])
+}
+
+model Resource {
+  id          Int     @id @default(autoincrement())
+  title       String
+  url         String
+  type        String  // VIDEO, ARTICLE, COURSE, TOOL
+  source      String
+  topicId     String?
+  description String?
+  topic       Topic?  @relation(fields: [topicId], references: [id])
+
+  @@index([topicId])
+}
