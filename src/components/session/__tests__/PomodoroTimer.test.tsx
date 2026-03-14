@@ -1,5 +1,6 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
+import { useAppStore } from '@/store/useAppStore'
 
 vi.useFakeTimers()
 
@@ -13,6 +14,19 @@ vi.mock('../useAudioNotification', () => ({
 import PomodoroTimer from '../PomodoroTimer'
 
 describe('PomodoroTimer', () => {
+  beforeEach(() => {
+    useAppStore.setState({
+      pomodoroState: {
+        durations: { work: 25, break: 5, longBreak: 15 },
+        mode: 'work',
+        isRunning: false,
+        endTime: null,
+        remainingMs: 25 * 60 * 1000,
+        completedSessions: 0,
+      },
+    })
+  })
+
   afterEach(() => {
     vi.clearAllTimers()
   })

@@ -10,6 +10,17 @@ interface TimerState {
   problemId: number | null
 }
 
+type PomodoroMode = 'work' | 'break' | 'longBreak'
+
+interface PomodoroState {
+  durations: Record<PomodoroMode, number>
+  mode: PomodoroMode
+  isRunning: boolean
+  endTime: number | null
+  remainingMs: number
+  completedSessions: number
+}
+
 interface AppStore {
   sidebarOpen: boolean
   toggleSidebar: () => void
@@ -19,6 +30,9 @@ interface AppStore {
   pauseTimer: () => void
   resetTimer: () => void
   getElapsed: () => number
+  pomodoroState: PomodoroState
+  setPomodoroState: (update: Partial<PomodoroState>) => void
+  pomodoroComplete: () => void
 }
 
 const noopStorage = {
@@ -83,6 +97,48 @@ export const useAppStore = create<AppStore>()(
 
         return timerState.elapsed
       },
+      pomodoroState: {
+        durations: { work: 25, break: 5, longBreak: 15 },
+        mode: 'work' as PomodoroMode,
+        isRunning: false,
+        endTime: null,
+        remainingMs: 25 * 60 * 1000,
+        completedSessions: 0,
+      },
+      setPomodoroState: (update) =>
+        set((state) => ({
+          pomodoroState: { ...state.pomodoroState, ...update },
+        })),
+      pomodoroComplete: () => {
+        const ps = get().pomodoroState
+        const newCount = ps.completedSessions + 1
+        let newMode: PomodoroMode
+        let newRemainingMs: number
+
+        if (ps.mode === 'work') {
+          if (newCount % 4 === 0) {
+            newMode = 'longBreak'
+            newRemainingMs = ps.durations.longBreak * 60 * 1000
+          } else {
+            newMode = 'break'
+            newRemainingMs = ps.durations.break * 60 * 1000
+          }
+        } else {
+          newMode = 'work'
+          newRemainingMs = ps.durations.work * 60 * 1000
+        }
+
+        set({
+          pomodoroState: {
+            ...ps,
+            isRunning: false,
+            endTime: null,
+            mode: newMode,
+            remainingMs: newRemainingMs,
+            completedSessions: newCount,
+          },
+        })
+      },
     }),
     {
       name: 'dsa-grind-app-store',
@@ -92,6 +148,7 @@ export const useAppStore = create<AppStore>()(
       partialize: (state) => ({
         sidebarOpen: state.sidebarOpen,
         timerState: state.timerState,
+        pomodoroState: state.pomodoroState,
       }),
     }
   )

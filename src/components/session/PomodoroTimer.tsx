@@ -1,18 +1,13 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useAppStore } from '@/store/useAppStore'
 
 import { useAudioNotification } from './useAudioNotification'
 
 type TimerMode = 'work' | 'break' | 'longBreak'
-
-const DEFAULT_DURATIONS: Record<TimerMode, number> = {
-  work: 25,
-  break: 5,
-  longBreak: 15,
-}
 
 interface PomodoroTimerProps {
   onSessionComplete?: (duration: number) => void
@@ -23,42 +18,36 @@ function padTime(n: number): string {
 }
 
 export default function PomodoroTimer({ onSessionComplete }: PomodoroTimerProps) {
-  const [durations, setDurations] = useState(DEFAULT_DURATIONS)
-  const [mode, setMode] = useState<TimerMode>('work')
-  const [isRunning, setIsRunning] = useState(false)
-  const [endTime, setEndTime] = useState<number | null>(null)
-  const [remainingMs, setRemainingMs] = useState(DEFAULT_DURATIONS.work * 60 * 1000)
-  const [completedSessions, setCompletedSessions] = useState(0)
+  const { pomodoroState, setPomodoroState, pomodoroComplete } = useAppStore()
+  const { mode, isRunning, endTime, remainingMs, completedSessions, durations } = pomodoroState
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const onSessionCompleteRef = useRef(onSessionComplete)
+  onSessionCompleteRef.current = onSessionComplete
+
   const { playBeep, requestPermission } = useAudioNotification()
 
   const handleTimerComplete = useCallback(() => {
     playBeep()
+    const { mode: currentMode, durations: currentDurations } =
+      useAppStore.getState().pomodoroState
+    pomodoroComplete()
+    if (currentMode === 'work') {
+      onSessionCompleteRef.current?.(currentDurations.work)
+    }
+  }, [pomodoroComplete, playBeep])
 
-    setCompletedSessions((prev) => {
-      const newCount = prev + 1
+  // Recovery: handle timer that completed while component was unmounted
+  const recoveredRef = useRef(false)
+  useEffect(() => {
+    if (recoveredRef.current) return
+    recoveredRef.current = true
 
-      if (mode === 'work') {
-        if (newCount % 4 === 0) {
-          setMode('longBreak')
-          setRemainingMs(durations.longBreak * 60 * 1000)
-        } else {
-          setMode('break')
-          setRemainingMs(durations.break * 60 * 1000)
-        }
-
-        onSessionComplete?.(durations.work)
-      } else {
-        setMode('work')
-        setRemainingMs(durations.work * 60 * 1000)
-      }
-
-      return newCount
-    })
-
-    setEndTime(null)
-  }, [durations, mode, onSessionComplete, playBeep])
+    const state = useAppStore.getState().pomodoroState
+    if (state.isRunning && state.endTime !== null && state.endTime <= Date.now()) {
+      handleTimerComplete()
+    }
+  }, [handleTimerComplete])
 
   useEffect(() => {
     if (!isRunning || endTime === null) {
@@ -77,13 +66,12 @@ export default function PomodoroTimer({ onSessionComplete }: PomodoroTimerProps)
           clearInterval(intervalRef.current)
           intervalRef.current = null
         }
-        setIsRunning(false)
-        setRemainingMs(0)
+        setPomodoroState({ isRunning: false, remainingMs: 0 })
         handleTimerComplete()
         return
       }
 
-      setRemainingMs(remaining)
+      setPomodoroState({ remainingMs: remaining })
     }, 1000)
 
     return () => {
@@ -92,26 +80,31 @@ export default function PomodoroTimer({ onSessionComplete }: PomodoroTimerProps)
         intervalRef.current = null
       }
     }
-  }, [endTime, handleTimerComplete, isRunning])
+  }, [endTime, handleTimerComplete, isRunning, setPomodoroState])
 
   function start() {
     void requestPermission()
-    setEndTime(Date.now() + remainingMs)
-    setIsRunning(true)
+    setPomodoroState({ endTime: Date.now() + remainingMs, isRunning: true })
   }
 
   function pause() {
     if (endTime !== null) {
-      setRemainingMs(Math.max(0, endTime - Date.now()))
+      setPomodoroState({
+        remainingMs: Math.max(0, endTime - Date.now()),
+        isRunning: false,
+        endTime: null,
+      })
+    } else {
+      setPomodoroState({ isRunning: false, endTime: null })
     }
-    setIsRunning(false)
-    setEndTime(null)
   }
 
   function reset() {
-    setIsRunning(false)
-    setEndTime(null)
-    setRemainingMs(durations[mode] * 60 * 1000)
+    setPomodoroState({
+      isRunning: false,
+      endTime: null,
+      remainingMs: durations[mode] * 60 * 1000,
+    })
   }
 
   function skip() {
@@ -200,9 +193,14 @@ export default function PomodoroTimer({ onSessionComplete }: PomodoroTimerProps)
                 value={durations[durationMode]}
                 onChange={(e) => {
                   const value = Math.max(1, Math.min(60, Number(e.target.value)))
-                  setDurations((prev) => ({ ...prev, [durationMode]: value }))
+                  const newDurations = { ...durations, [durationMode]: value } as Record<
+                    TimerMode,
+                    number
+                  >
                   if (!isRunning && mode === durationMode) {
-                    setRemainingMs(value * 60 * 1000)
+                    setPomodoroState({ durations: newDurations, remainingMs: value * 60 * 1000 })
+                  } else {
+                    setPomodoroState({ durations: newDurations })
                   }
                 }}
                 className="w-10 rounded border border-border bg-transparent px-1 py-0.5 text-center text-foreground"
