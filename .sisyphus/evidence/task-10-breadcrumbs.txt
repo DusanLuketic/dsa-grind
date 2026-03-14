@@ -1,0 +1,42 @@
+Task 10: Breadcrumbs + Error Toast Pattern (TDD)
+==================================================
+Date: 2026-03-14
+
+Files Created:
+- src/components/layout/Breadcrumbs.tsx — route-aware breadcrumb component
+- src/components/layout/__tests__/Breadcrumbs.test.tsx — 7 tests
+- src/lib/toast.ts — showSuccess, showError helper functions
+- src/components/ui/sonner.tsx — Toaster component (shadcn, dark-mode fixed)
+- src/app/error.tsx — global error boundary (use client)
+- src/app/not-found.tsx — 404 page
+
+Files Modified:
+- src/app/layout.tsx — added Breadcrumbs + Toaster imports, replaced comment with <Breadcrumbs />, added <Toaster richColors position="bottom-right" />
+
+Test Results:
+  Test Files  2 passed (2)
+       Tests  12 passed (12)
+    Duration  1.67s
+
+  Breadcrumbs tests (7/7 passing):
+  - renders nothing on root path
+  - renders Dashboard link as first breadcrumb
+  - renders breadcrumb for topic page
+  - renders correct segments for nested route
+  - formats slug segments to title case
+  - renders last segment as non-link text
+  - has correct aria-label for accessibility
+
+LSP Diagnostics: Clean on all changed files
+  - src/app/layout.tsx — 0 errors
+  - src/components/layout/Breadcrumbs.tsx — 0 errors
+  - src/lib/toast.ts — 0 errors
+  - src/components/ui/sonner.tsx — 0 errors
+  - src/app/error.tsx — 0 errors
+  - src/app/not-found.tsx — 0 errors
+
+Design Decisions:
+- Sonner Toaster: shadcn component used next-themes; replaced with hardcoded "dark" theme since app is dark-mode-only
+- Button asChild: base-ui Button doesn't support asChild prop; used buttonVariants() with Link directly in not-found.tsx
+- Error component: renamed from Error to ErrorPage to avoid shadowing global Error
+- Breadcrumbs: uses SEGMENT_LABELS map for known routes, falls back to title-casing slug segments

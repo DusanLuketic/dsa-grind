@@ -1,0 +1,39 @@
+Task 11: useKeyboardShortcuts Hook (TDD) - COMPLETED
+
+IMPLEMENTATION SUMMARY:
+- Created src/hooks/useKeyboardShortcuts.ts with keyboard shortcut handling
+- Created src/hooks/__tests__/useKeyboardShortcuts.test.ts with comprehensive tests
+- Hook listens for n/p/s key presses globally
+- Ignores INPUT, TEXTAREA, and contentEditable elements
+- Gracefully handles missing callbacks (no-op)
+
+TEST RESULTS:
+✓ All 7 tests passing
+✓ Test Files: 1 passed
+✓ Tests: 7 passed
+✓ Duration: 1.00s
+
+TEST COVERAGE:
+1. calls onNext when n key is pressed ✓
+2. calls onPrevious when p key is pressed ✓
+3. calls onStatusToggle when s key is pressed ✓
+4. does NOT fire when target is an input element ✓
+5. does NOT fire when target is a textarea element ✓
+6. does NOT fire when target is contentEditable ✓
+7. does not crash when no callbacks provided ✓
+
+IMPLEMENTATION DETAILS:
+- Hook accepts KeyboardShortcutsConfig interface with optional callbacks
+- Uses useEffect to attach/detach keydown event listener
+- Checks target element type before executing callbacks
+- Supports case-insensitive key matching
+- Proper cleanup on unmount
+
+FILES CREATED:
+- src/hooks/useKeyboardShortcuts.ts (40 lines)
+- src/hooks/__tests__/useKeyboardShortcuts.test.ts (67 lines)
+
+VERIFICATION:
+✓ npm run test -- --run src/hooks/__tests__/useKeyboardShortcuts.test.ts
+✓ All tests passing
+✓ No LSP errors in hook implementation

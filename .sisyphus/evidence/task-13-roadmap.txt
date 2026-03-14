@@ -1,0 +1,33 @@
+Task 13 - Roadmap Page + DAG Visualization
+Date: 2026-03-14
+
+Changed files:
+- src/app/roadmap/page.tsx
+- src/components/roadmap/TopicNode.tsx
+- src/components/roadmap/RoadmapFlow.tsx
+- src/components/roadmap/__tests__/TopicNode.test.tsx
+- src/components/roadmap/__tests__/RoadmapFlow.test.tsx
+
+Implementation evidence:
+- Server roadmap page now fetches solved progress + topic totals via Prisma groupBy/findMany and maps all TOPICS to progress payload.
+- TopicNode component renders title/icon/progress and applies status colors:
+  - gray: 0 solved (or empty topic)
+  - yellow: partial progress
+  - green: complete progress
+- RoadmapFlow is a client DAG view using CSS Grid node placement from ROADMAP_LAYERS.
+- SVG overlay renders dependency connections from ROADMAP_EDGES with directed arrow markers.
+- Render validation: 18 topic cards are produced from constants and flow layout.
+
+Verification:
+- lsp_diagnostics clean for changed files:
+  - src/app/roadmap/page.tsx
+  - src/components/roadmap/TopicNode.tsx
+  - src/components/roadmap/RoadmapFlow.tsx
+  - src/components/roadmap/__tests__/TopicNode.test.tsx
+  - src/components/roadmap/__tests__/RoadmapFlow.test.tsx
+
+- Command: npm run test -- --run src/components/roadmap
+  Result: 2 passed files, 11 passed tests.
+
+- Command: npm run build
+  Result: build succeeded, /roadmap route generated.

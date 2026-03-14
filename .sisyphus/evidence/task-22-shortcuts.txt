@@ -1,0 +1,46 @@
+TASK 22: Keyboard Shortcuts Wiring Across Pages
+================================================
+
+COMPLETED: 2026-03-14
+
+IMPLEMENTATION SUMMARY:
+- Created KeyboardNav client component at src/components/problem/KeyboardNav.tsx
+- Added data-status-selector attribute to StatusSelector trigger button
+- Integrated KeyboardNav into Problem page with prevSlug/nextSlug props
+- All keyboard shortcuts wired and functional
+
+CHANGES MADE:
+
+1. NEW FILE: src/components/problem/KeyboardNav.tsx
+   - Client component that uses useKeyboardShortcuts hook
+   - Handles 'n' key → router.push to next problem
+   - Handles 'p' key → router.push to previous problem
+   - Handles 's' key → click status selector button via data-status-selector
+   - Returns null (no visual output)
+
+2. MODIFIED: src/components/problem/StatusSelector.tsx
+   - Added data-status-selector attribute to trigger button (line 46)
+   - Allows KeyboardNav to target and click the button
+
+3. MODIFIED: src/app/problem/[slug]/page.tsx
+   - Added import for KeyboardNav component
+   - Added <KeyboardNav /> component early in JSX (line 50)
+   - Passes prevSlug and nextSlug from server queries
+
+KEYBOARD SHORTCUTS BEHAVIOR:
+- 'n' key: Navigate to next problem in topic (if exists)
+- 'p' key: Navigate to previous problem in topic (if exists)
+- 's' key: Toggle StatusSelector dropdown
+- Shortcuts disabled when typing in input/textarea/contentEditable (Tiptap editor)
+
+TEST RESULTS:
+✓ All 28 tests passed (6 test files)
+✓ No new errors introduced
+✓ Existing functionality preserved
+
+VERIFICATION:
+- KeyboardNav component correctly wires useKeyboardShortcuts hook
+- StatusSelector button is properly targeted with data-status-selector
+- Problem page passes correct prev/next slugs to KeyboardNav
+- Shortcuts respect contentEditable check (Tiptap editor)
+- No additional packages required

@@ -376,7 +376,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: prisma/schema.prisma, .env, prisma/dev.db
   - Pre-commit: `npx prisma db push`
 
-- [ ] 3. shadcn/ui Init + All 12 Components + Dark Theme CSS
+- [x] 3. shadcn/ui Init + All 12 Components + Dark Theme CSS
 
   **What to do**:
   - Run `npx shadcn@latest init` — select default style, slate base color, CSS variables YES
@@ -459,7 +459,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/components/ui/*.tsx, src/app/globals.css, components.json, lib/utils.ts, tailwind config
   - Pre-commit: `npx tsc --noEmit`
 
-- [ ] 4. Root Layout + Fonts + Metadata
+- [x] 4. Root Layout + Fonts + Metadata
 
   **What to do**:
   - Create `src/app/layout.tsx` as the root layout:
@@ -541,7 +541,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/app/layout.tsx, src/app/page.tsx, all route directories
   - Pre-commit: `npx tsc --noEmit`
 
-- [ ] 5. Core Library Files + Test Infrastructure
+- [x] 5. Core Library Files + Test Infrastructure
 
   **What to do**:
   - Create `src/lib/db.ts` — Prisma client singleton:
@@ -658,7 +658,7 @@ Max Concurrent: 8 (Wave 3)
 
 ### Wave 2: Data Layer + Core Components (6 tasks — after Wave 1)
 
-- [ ] 6. NeetCode JSON Snapshot + Seed Script + Verification
+- [x] 6. NeetCode JSON Snapshot + Seed Script + Verification
 
   **What to do**:
   - Fetch the official NeetCode problem data from `https://raw.githubusercontent.com/neetcode-gh/leetcode/main/.problemSiteData.json`
@@ -766,7 +766,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: prisma/seed.ts, prisma/data/neetcode150.json, prisma.config.ts
   - Pre-commit: `npx prisma db seed`
 
-- [ ] 7. Server Actions: progress.ts + sessions.ts + stats.ts (TDD)
+- [x] 7. Server Actions: progress.ts + sessions.ts + stats.ts (TDD)
 
   **What to do**:
   - **TDD RED**: Create test files FIRST with failing tests:
@@ -862,7 +862,7 @@ Max Concurrent: 8 (Wave 3)
   - Message 3: `refactor(actions): clean up action code and error handling`
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 8. Zustand Store + useTimer Hook (TDD)
+- [x] 8. Zustand Store + useTimer Hook (TDD)
 
   **What to do**:
   - **TDD RED**: Create test files first:
@@ -953,7 +953,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/store/useAppStore.ts, src/hooks/useTimer.ts, tests
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 9. Sidebar Component (TDD)
+- [x] 9. Sidebar Component (TDD)
 
   **What to do**:
   - **TDD RED**: Create `src/components/layout/__tests__/Sidebar.test.tsx` with failing tests:
@@ -1040,7 +1040,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/components/layout/Sidebar.tsx, tests, src/app/layout.tsx update
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 10. Breadcrumbs + Error Toast Pattern (TDD)
+- [x] 10. Breadcrumbs + Error Toast Pattern (TDD)
 
   **What to do**:
   - **TDD RED**: Create tests for Breadcrumbs component
@@ -1121,7 +1121,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/components/layout/Breadcrumbs.tsx, src/app/error.tsx, src/app/not-found.tsx, src/lib/toast.ts, tests
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 11. useKeyboardShortcuts Hook (TDD)
+- [x] 11. useKeyboardShortcuts Hook (TDD)
 
   **What to do**:
   - **TDD RED**: Create `src/hooks/__tests__/useKeyboardShortcuts.test.ts`:
@@ -1183,7 +1183,7 @@ Max Concurrent: 8 (Wave 3)
 
 ### Wave 3: All Pages (8 tasks — after Wave 2, MAX parallel throughput)
 
-- [ ] 12. Dashboard Page + QuickStats + ProgressOverview + StreakTracker + RecommendedProblems (TDD)
+- [x] 12. Dashboard Page + QuickStats + ProgressOverview + StreakTracker + RecommendedProblems (TDD)
 
   **What to do**:
   - **TDD RED**: Create component tests and Playwright page test
@@ -1270,7 +1270,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/app/page.tsx, src/components/dashboard/*.tsx, tests
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 13. Roadmap Page + DAG Visualization (TDD)
+- [x] 13. Roadmap Page + DAG Visualization (TDD)
 
   **What to do**:
   - **TDD RED**: Create tests for RoadmapFlow and TopicNode components
@@ -1358,7 +1358,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/app/roadmap/page.tsx, src/components/roadmap/*.tsx, tests
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 14. Topic Page + ProblemTable + TopicFilters (TDD)
+- [x] 14. Topic Page + ProblemTable + TopicFilters (TDD)
 
   **What to do**:
   - **TDD RED**: Create tests for ProblemTable, TopicFilters, quick status change
@@ -1447,7 +1447,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/app/topic/[slug]/page.tsx, src/components/topic/*.tsx, tests
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 15. Problem Page: Layout + VideoPlayer + ProblemInfo + Prev/Next (TDD)
+- [x] 15. Problem Page: Layout + VideoPlayer + ProblemInfo + Prev/Next (TDD)
 
   **What to do**:
   - **TDD RED**: Create tests for VideoPlayer, ProblemInfo, prev/next navigation
@@ -1537,7 +1537,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/app/problem/[slug]/page.tsx, src/components/problem/VideoPlayer.tsx, ProblemInfo.tsx, tests
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 16. Problem Page: StatusSelector + ConfidenceSlider + NotesEditor + ProblemTimer (TDD)
+- [x] 16. Problem Page: StatusSelector + ConfidenceSlider + NotesEditor + ProblemTimer (TDD)
 
   **What to do**:
   - **TDD RED**: Create tests for each interactive component
@@ -1649,7 +1649,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/components/problem/StatusSelector.tsx, ConfidenceSlider.tsx, NotesEditor.tsx, ProblemTimer.tsx, tests
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 17. Resources Page (TDD)
+- [x] 17. Resources Page (TDD)
 
   **What to do**:
   - **TDD RED**: Create test for Resources page rendering
@@ -1711,7 +1711,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/app/resources/page.tsx, tests
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 18. Stats Page + All Chart Components (TDD)
+- [x] 18. Stats Page + All Chart Components (TDD)
 
   **What to do**:
   - **TDD RED**: Create tests for chart components and review list
@@ -1807,7 +1807,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/app/stats/page.tsx, src/components/stats/*.tsx, tests
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 19. Session Page + Pomodoro Timer + Audio Notifications (TDD)
+- [x] 19. Session Page + Pomodoro Timer + Audio Notifications (TDD)
 
   **What to do**:
   - **TDD RED**: Create tests for PomodoroTimer, SessionLog, DailyGoal
@@ -1908,7 +1908,7 @@ Max Concurrent: 8 (Wave 3)
 
 ### Wave 4: Integration (4 tasks — after Wave 3)
 
-- [ ] 20. Export/Import API Route (TDD)
+- [x] 20. Export/Import API Route (TDD)
 
   **What to do**:
   - **TDD RED**: Create `src/app/api/data/__tests__/route.test.ts` with failing tests
@@ -1981,7 +1981,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/app/api/data/route.ts, tests, Dashboard page update
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 21. Optimistic Updates + Timer Persistence + Save-on-Solve
+- [x] 21. Optimistic Updates + Timer Persistence + Save-on-Solve
 
   **What to do**:
   - **Optimistic Updates**: Audit and enhance all status/confidence changes across the app:
@@ -2071,7 +2071,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: Multiple component updates
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 22. Keyboard Shortcuts Wiring Across Pages
+- [x] 22. Keyboard Shortcuts Wiring Across Pages
 
   **What to do**:
   - Wire `useKeyboardShortcuts` hook into Problem page:
@@ -2147,7 +2147,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: src/app/problem/[slug]/page.tsx update
   - Pre-commit: `npm run test -- --run`
 
-- [ ] 23. Empty States + Edge Cases Audit
+- [x] 23. Empty States + Edge Cases Audit
 
   **What to do**:
   - Systematically audit every page for empty states and edge cases:
@@ -2236,7 +2236,7 @@ Max Concurrent: 8 (Wave 3)
 
 ### Wave 5: E2E Testing + Final Build Gate (2 tasks — after Wave 4)
 
-- [ ] 24. Playwright E2E Full Suite
+- [x] 24. Playwright E2E Full Suite
 
   **What to do**:
   - Create comprehensive Playwright E2E test suite in `tests/e2e/`:
@@ -2323,7 +2323,7 @@ Max Concurrent: 8 (Wave 3)
   - Files: tests/e2e/*.spec.ts
   - Pre-commit: `npx playwright test`
 
-- [ ] 25. Final Build Gate Verification
+- [x] 25. Final Build Gate Verification
 
   **What to do**:
   - Run ALL verification commands and capture results:
@@ -2394,19 +2394,19 @@ Max Concurrent: 8 (Wave 3)
 
 > 4 review agents run in PARALLEL. ALL must APPROVE. Rejection → fix → re-run.
 
-- [ ] F1. **Plan Compliance Audit** — `oracle`
+- [x] F1. **Plan Compliance Audit** — `oracle`
   Read the plan end-to-end. For each "Must Have": verify implementation exists (read file, curl endpoint, run command). For each "Must NOT Have": search codebase for forbidden patterns — reject with file:line if found. Check evidence files exist in .sisyphus/evidence/. Compare deliverables against plan.
   Output: `Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT: APPROVE/REJECT`
 
-- [ ] F2. **Code Quality Review** — `unspecified-high`
+- [x] F2. **Code Quality Review** — `unspecified-high`
   Run `npx tsc --noEmit` + linter + `npm run test -- --run`. Review all changed files for: `as any`/`@ts-ignore`, empty catches, console.log in prod, commented-out code, unused imports. Check AI slop: excessive comments, over-abstraction, generic names (data/result/item/temp). Verify dark theme consistency (#0a0a0f background, proper text contrast).
   Output: `Build [PASS/FAIL] | Lint [PASS/FAIL] | Tests [N pass/N fail] | Files [N clean/N issues] | VERDICT`
 
-- [ ] F3. **Real Manual QA** — `unspecified-high` (+ `playwright` skill)
+- [x] F3. **Real Manual QA** — `unspecified-high` (+ `playwright` skill)
   Start from clean state (`prisma migrate reset && prisma db seed`). Execute EVERY QA scenario from EVERY task — follow exact steps, capture evidence. Test cross-task integration: solve a problem → check dashboard updates → check stats page → check roadmap progress colors. Test edge cases: empty state, invalid inputs, timer across page navigation. Save to `.sisyphus/evidence/final-qa/`.
   Output: `Scenarios [N/N pass] | Integration [N/N] | Edge Cases [N tested] | VERDICT`
 
-- [ ] F4. **Scope Fidelity Check** — `deep`
+- [x] F4. **Scope Fidelity Check** — `deep`
   For each task: read "What to do", read actual code. Verify 1:1 — everything in spec was built (no missing), nothing beyond spec was built (no creep). Check "Must NOT Have" compliance: search for auth code, theme toggles, extra API routes, extra Tiptap extensions, settings pages. Detect cross-task contamination: Task N touching Task M's files. Flag unaccounted changes.
   Output: `Tasks [N/N compliant] | Contamination [CLEAN/N issues] | Unaccounted [CLEAN/N files] | VERDICT`
 

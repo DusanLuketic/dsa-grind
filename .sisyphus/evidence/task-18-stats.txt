@@ -1,0 +1,34 @@
+Task 18: Stats Page + All Chart Components — Evidence
+=====================================================
+Date: 2026-03-14
+
+## Files Created/Modified
+- src/app/stats/page.tsx — Server component with Prisma data fetching (modified existing stub)
+- src/components/stats/ProgressChart.tsx — Recharts LineChart (cumulative solved)
+- src/components/stats/DifficultyPie.tsx — Recharts PieChart donut (by difficulty)
+- src/components/stats/ActivityHeatmap.tsx — Custom SVG grid heatmap (365 days)
+- src/components/stats/ReviewList.tsx — Review candidate list component
+- src/components/stats/__tests__/ProgressChart.test.tsx — 2 tests
+- src/components/stats/__tests__/DifficultyPie.test.tsx — 3 tests
+- src/components/stats/__tests__/ActivityHeatmap.test.tsx — 3 tests
+- src/components/stats/__tests__/ReviewList.test.tsx — 6 tests
+
+## Test Results
+ Test Files  4 passed (4)
+       Tests  14 passed (14)
+    Duration  1.54s
+
+## LSP Diagnostics
+All new/modified files: 0 errors
+
+## Compatibility Check
+- react-activity-calendar@3.1.1: supports React ^18.0.0 || ^19.0.0 (compatible)
+- recharts@3.8.0: supports React ^19.0.0 (compatible)
+- Used custom SVG heatmap implementation for full control and no dependency risk
+- Used DIFFICULTY_COLORS from constants instead of hardcoded hex values
+
+## Design System Compliance
+- Colors: uses HSL CSS variables from globals.css theme (not hardcoded hex)
+- Spacing: follows Tailwind scale (p-6, gap-4, space-y-6, etc.)
+- Components: uses Card/Badge from shadcn/ui system
+- Patterns: matches dashboard page structure (Promise.all data fetching, Card grid layout)

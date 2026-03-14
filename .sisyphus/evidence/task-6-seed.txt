@@ -1,0 +1,75 @@
+[Task 6] NeetCode JSON Snapshot + Seed Script + Verification
+Date: 2026-03-13
+
+1) Fetch snapshot + validate NeetCode 150 count
+Command:
+  mkdir -p "prisma/data" && curl -o "prisma/data/neetcode150.json" "https://raw.githubusercontent.com/neetcode-gh/leetcode/main/.problemSiteData.json" && npx tsx -e "const data = require('./prisma/data/neetcode150.json'); const count = data.filter((p)=>p.neetcode150===true).length; console.log('Total problems in JSON:', data.length); console.log('NeetCode 150 problems:', count);"
+Output:
+  Total problems in JSON: 450
+  NeetCode 150 problems: 150
+
+2) Inspect sample NeetCode item
+Command:
+  npx tsx -e "const data = require('./prisma/data/neetcode150.json'); const first = data.find((p)=>p.neetcode150===true); console.log(JSON.stringify(first, null, 2));"
+Output (excerpt):
+  {
+    "neetcode150": true,
+    "problem": "Contains Duplicate",
+    "pattern": "Arrays & Hashing",
+    "link": "contains-duplicate/",
+    "video": "3OamzN90kPg",
+    "difficulty": "Easy"
+  }
+
+3) Seed run via Prisma command
+Command:
+  npx prisma db seed
+Output:
+  Loaded Prisma config from prisma.config.ts.
+  Running seed command `npx tsx prisma/seed.ts` ...
+  Seeding database...
+  Found 150 NeetCode 150 problems
+  Topics: 18 (expected: 18)
+  Problems: 150 (expected: 150)
+  Resources: 17 (expected: 17)
+  Problems with empty youtubeUrl: 0 (expected: 0)
+  All seed checks passed
+  The seed command has been executed.
+
+4) Idempotency run
+Command:
+  npx tsx prisma/seed.ts
+Output:
+  Seeding database...
+  Found 150 NeetCode 150 problems
+  Topics: 18 (expected: 18)
+  Problems: 150 (expected: 150)
+  Resources: 17 (expected: 17)
+  Problems with empty youtubeUrl: 0 (expected: 0)
+  All seed checks passed
+
+5) Verification query (counts + YouTube URLs)
+Command:
+  npx tsx -e "require('dotenv/config'); const path = require('node:path'); const { DatabaseSync } = require('node:sqlite'); const dbPath = path.resolve(process.cwd(), process.env.DATABASE_URL.replace(/^file:/,'')); const db = new DatabaseSync(dbPath); const counts = db.prepare('SELECT (SELECT COUNT(*) FROM \"Topic\") AS topics, (SELECT COUNT(*) FROM \"Problem\") AS problems, (SELECT COUNT(*) FROM \"Resource\") AS resources').get(); console.log('Topics:', counts.topics, '(expected: 18)'); console.log('Problems:', counts.problems, '(expected: 150)'); console.log('Resources:', counts.resources, '(expected: 17)'); const yt = db.prepare('SELECT (SELECT COUNT(*) FROM \"Problem\" WHERE \"youtubeUrl\" = \'\') AS empty, (SELECT COUNT(*) FROM \"Problem\" WHERE \"youtubeUrl\" LIKE \'%watch?v=%\') AS direct, (SELECT COUNT(*) FROM \"Problem\" WHERE \"youtubeUrl\" LIKE \'%results%\') AS search').get(); console.log('Problems with empty YouTube URLs:', yt.empty, '(expected: 0)'); console.log('Problems with direct video URLs:', yt.direct); console.log('Problems with search fallback URLs:', yt.search); db.close();"
+Output:
+  Topics: 18 (expected: 18)
+  Problems: 150 (expected: 150)
+  Resources: 17 (expected: 17)
+  Problems with empty YouTube URLs: 0 (expected: 0)
+  Problems with direct video URLs: 150
+  Problems with search fallback URLs: 0
+
+6) Type diagnostics check
+Command:
+  lsp_diagnostics prisma/seed.ts + prisma.config.ts
+Output:
+  No diagnostics found in changed TypeScript files.
+
+7) Build verification
+Command:
+  npm run build
+Output:
+  ✓ Compiled successfully
+  ✓ Running TypeScript
+  ✓ Generating static pages
+  Build completed successfully.

@@ -1,0 +1,60 @@
+Task 3: shadcn/ui Init + All 12 Components + Dark Theme CSS
+============================================================
+Date: 2026-03-13
+
+## shadcn/ui Version
+shadcn@4.0.6 (installed via npx shadcn@latest)
+
+## shadcn Init Output
+- Style: base-nova (default for shadcn v4)
+- Icon library: lucide
+- Tailwind: v4 detected automatically
+- Created: src/components/ui/button.tsx, src/lib/utils.ts
+- Updated: src/app/globals.css, components.json
+
+## Component Files in src/components/ui/ (12 total)
+1. badge.tsx
+2. button.tsx
+3. card.tsx
+4. dialog.tsx
+5. dropdown-menu.tsx
+6. progress.tsx
+7. scroll-area.tsx
+8. separator.tsx
+9. sheet.tsx
+10. slider.tsx
+11. tabs.tsx
+12. tooltip.tsx
+
+## components.json
+- Exists at project root
+- Style: base-nova
+- RSC: true
+- TSX: true
+- Base color: neutral
+- CSS variables: true
+- Icon library: lucide
+
+## Dark Theme CSS Configuration
+- globals.css configured with dark-mode-only values in :root
+- NO .light class variables
+- NO prefers-color-scheme media query
+- NO next-themes package
+- Background: hsl(240 10% 3.9%) — approximates #0a0a0f
+- Primary: hsl(217.2 91.2% 59.8%) — vivid blue
+- All semantic colors set to dark theme values
+- Tailwind v4 @theme inline block preserved
+- @custom-variant dark (&:is(.dark *)) preserved for component dark: variants
+
+## Build Verification
+- `npx next build` compiles successfully
+- No TypeScript errors
+- Static pages generated correctly
+
+## Issues / Gotchas
+- `npx shadcn@latest init --yes` did NOT auto-accept (interactive prompt appeared)
+- Used `--defaults` flag instead which worked correctly
+- shadcn v4 uses oklch color format by default; replaced with hsl() values from task spec for precision
+- shadcn v4 uses base-nova style (Base UI) instead of older Radix-based default
+- Components use `dark:` variant classes — these refinements will activate when Task 4 adds className="dark" to <html>
+- CSS LSP shows errors for Tailwind-specific syntax (@theme, @apply, @custom-variant) — expected, not real build errors

@@ -1,0 +1,78 @@
+Task 21 Evidence - Optimistic Updates + Timer Persistence + Save-on-Solve
+Date: 2026-03-14
+
+Implemented files:
+- src/components/problem/StatusSelector.tsx
+- src/components/problem/ProblemControls.tsx
+- src/components/problem/SaveTimeDialog.tsx
+- src/components/problem/__tests__/StatusSelector.test.tsx
+- src/components/problem/__tests__/ConfidenceSlider.test.tsx
+- src/components/problem/__tests__/NotesEditor.test.tsx
+- src/components/problem/__tests__/ProblemControls.test.tsx
+- src/components/problem/__tests__/SaveTimeDialog.test.tsx
+
+Audit findings:
+1) StatusSelector optimistic update
+   - Existing implementation already used local state + useTransition for immediate UI updates.
+   - Server failure path already reverted local state and showed an error toast.
+   - Added onStatusChange callback support so parent controls can react to optimistic changes.
+   - Added rollback callback on failure so parent state stays in sync when the optimistic update reverts.
+
+2) ConfidenceSlider debounced optimistic save
+   - Existing implementation already updates the slider label immediately via local state.
+   - Save remains debounced by 500ms before calling updateProgress.
+   - Added tests covering immediate label updates and debounce collapse to the final value.
+
+3) NotesEditor save indicator
+   - Existing implementation already flips saveState to saving on edit, then saved after the debounced server save succeeds.
+   - Added a focused test with mocked Tiptap hooks to verify the Saving... -> Saved indicator flow.
+
+4) Save-on-solve flow
+   - ProblemControls now listens for status changes and opens SaveTimeDialog when status changes into SOLVED and the active timer for that problem has more than 30 seconds elapsed.
+   - SaveTimeDialog uses the shared dialog/button primitives, saves rounded elapsed minutes through updateProgress, and resets the timer on save or skip.
+
+5) Timer persistence verification
+   - src/store/useAppStore.ts already uses zustand persist middleware.
+   - Persist key: dsa-grind-app-store.
+   - localStorage is used on the client via createJSONStorage.
+   - partialize includes timerState, so timer data survives page navigation and reload hydration.
+
+Verification:
+1) RED phase
+Command:
+  npm test -- src/components/problem/__tests__/StatusSelector.test.tsx src/components/problem/__tests__/ConfidenceSlider.test.tsx src/components/problem/__tests__/NotesEditor.test.tsx src/components/problem/__tests__/ProblemControls.test.tsx src/components/problem/__tests__/SaveTimeDialog.test.tsx
+Result:
+  FAIL before implementation (missing SaveTimeDialog, missing onStatusChange wiring, missing save-on-solve flow)
+
+2) GREEN phase
+Command:
+  npm test -- src/components/problem/__tests__/StatusSelector.test.tsx src/components/problem/__tests__/ConfidenceSlider.test.tsx src/components/problem/__tests__/NotesEditor.test.tsx src/components/problem/__tests__/ProblemControls.test.tsx src/components/problem/__tests__/SaveTimeDialog.test.tsx
+Result:
+  Test Files  5 passed
+  Tests       14 passed
+
+3) Timer/store verification
+Command:
+  npm test -- src/store/__tests__/useAppStore.test.ts src/hooks/__tests__/useTimer.test.ts
+Result:
+  Test Files  2 passed
+  Tests       11 passed
+
+4) LSP diagnostics
+Result:
+  No diagnostics found in:
+  - src/components/problem/StatusSelector.tsx
+  - src/components/problem/ProblemControls.tsx
+  - src/components/problem/SaveTimeDialog.tsx
+  - src/components/problem/__tests__/StatusSelector.test.tsx
+  - src/components/problem/__tests__/ConfidenceSlider.test.tsx
+  - src/components/problem/__tests__/NotesEditor.test.tsx
+  - src/components/problem/__tests__/ProblemControls.test.tsx
+  - src/components/problem/__tests__/SaveTimeDialog.test.tsx
+
+5) Build
+Command:
+  npm run build
+Result:
+  PASS - production build completed successfully.
+  Note: Next.js emitted an existing workspace-root warning about multiple lockfiles, but compilation and static generation succeeded.

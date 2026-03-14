@@ -9,3 +9,7 @@ prisma/dev.db-journal
 *.tsbuildinfo
 
 /src/generated/prisma
+
+nul
+
+test-results

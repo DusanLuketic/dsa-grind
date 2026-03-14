@@ -1,0 +1,38 @@
+Task 16 Evidence - Problem Controls
+Date: 2026-03-14
+
+Implemented files:
+- src/components/problem/StatusSelector.tsx
+- src/components/problem/ConfidenceSlider.tsx
+- src/components/problem/NotesEditor.tsx
+- src/components/problem/ProblemTimer.tsx
+- src/components/problem/ProblemControls.tsx
+- src/components/problem/__tests__/StatusSelector.test.tsx
+- src/components/problem/__tests__/ConfidenceSlider.test.tsx
+
+Updated files:
+- src/app/problem/[slug]/page.tsx (mounted ProblemControls)
+- src/app/globals.css (Tiptap styles)
+- src/app/not-found.tsx (build fix: removed server call to client buttonVariants)
+
+Verification:
+1) Tests
+Command: npm run test -- --run src/components/problem
+Result: PASS
+- Test Files: 4 passed
+- Tests: 17 passed
+
+2) Build
+Command: npm run build
+Result: PASS
+- Compiled successfully
+- Static pages generated successfully
+
+3) LSP diagnostics
+- No diagnostics: StatusSelector.tsx, ConfidenceSlider.tsx, NotesEditor.tsx, ProblemTimer.tsx, ProblemControls.tsx
+- No diagnostics: page.tsx, not-found.tsx, test files
+- globals.css shows known Tailwind parser false positives from biome for @custom-variant/@theme/@apply syntax
+
+Notes:
+- NotesEditor uses Tiptap v3 with immediatelyRender: false to avoid SSR hydration mismatch.
+- StatusSelector uses optimistic UI update and rollback on updateProgress failure.
