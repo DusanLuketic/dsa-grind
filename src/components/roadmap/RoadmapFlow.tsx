@@ -24,8 +24,8 @@ interface TopicPosition {
   y: number
 }
 
-const NODE_WIDTH = 160
-const NODE_HEIGHT = 104
+const NODE_WIDTH = 180
+const NODE_HEIGHT = 56
 const COL_GAP = 48
 const ROW_GAP = 72
 
@@ -52,6 +52,36 @@ export default function RoadmapFlow({ topics }: RoadmapFlowProps) {
     })
   })
 
+  // Build edge paths with collision avoidance for multi-row spans
+  function getEdgePath(start: TopicPosition, end: TopicPosition): string {
+    const startY = start.y + NODE_HEIGHT / 2
+    const endY = end.y - NODE_HEIGHT / 2
+    const rowSpan = end.row - start.row
+
+    if (rowSpan <= 1) {
+      const controlY = (startY + endY) / 2
+      return `M ${start.x} ${startY} C ${start.x} ${controlY}, ${end.x} ${controlY}, ${end.x} ${endY}`
+    }
+
+    // Multi-row span: check for intermediate node collisions
+    let offsetX = 0
+    const intermediateNodes = Array.from(topicPositions.values())
+      .filter((pos) => pos.row > start.row && pos.row < end.row)
+
+    for (const intNode of intermediateNodes) {
+      const t = (intNode.row - start.row) / rowSpan
+      const lineXAtRow = start.x + (end.x - start.x) * t
+      if (Math.abs(intNode.x - lineXAtRow) < NODE_WIDTH * 0.7) {
+        // Collision — curve away from the blocking node
+        offsetX = intNode.x >= lineXAtRow ? -NODE_WIDTH * 0.8 : NODE_WIDTH * 0.8
+        break
+      }
+    }
+
+    const controlY = (startY + endY) / 2
+    return `M ${start.x} ${startY} C ${start.x + offsetX} ${controlY}, ${end.x + offsetX} ${controlY}, ${end.x} ${endY}`
+  }
+
   return (
     <div className="min-w-[640px] pb-8">
       <div className="relative" style={{ width: gridWidth, height: gridHeight }}>
@@ -65,14 +95,14 @@ export default function RoadmapFlow({ topics }: RoadmapFlowProps) {
           <defs>
             <marker
               id="roadmap-arrow"
-              markerWidth="8"
-              markerHeight="8"
-              refX="6"
+              markerWidth="6"
+              markerHeight="6"
+              refX="5"
               refY="3"
               orient="auto"
               markerUnits="strokeWidth"
             >
-              <path d="M0,0 L0,6 L6,3 z" className="fill-muted-foreground/60" />
+              <path d="M0,0.5 L0,5.5 L5,3 z" fill="rgba(255,255,255,0.5)" />
             </marker>
           </defs>
           {Object.entries(ROADMAP_EDGES).flatMap(([fromTopicId, toTopicIds]) => {
@@ -83,15 +113,11 @@ export default function RoadmapFlow({ topics }: RoadmapFlowProps) {
               const end = topicPositions.get(toTopicId)
               if (!end) return []
 
-              const startY = start.y + NODE_HEIGHT / 2 - 8
-              const endY = end.y - NODE_HEIGHT / 2 + 8
-              const controlY = (startY + endY) / 2
-
               return (
                 <path
                   key={`${fromTopicId}-${toTopicId}`}
-                  d={`M ${start.x} ${startY} C ${start.x} ${controlY}, ${end.x} ${controlY}, ${end.x} ${endY}`}
-                  className="stroke-muted-foreground/45"
+                  d={getEdgePath(start, end)}
+                  stroke="rgba(255,255,255,0.4)"
                   strokeWidth="2"
                   fill="none"
                   markerEnd="url(#roadmap-arrow)"

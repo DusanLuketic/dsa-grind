@@ -26,36 +26,34 @@ describe('TopicNode', () => {
     expect(screen.getByText('Arrays & Hashing')).toBeDefined()
   })
 
-  it('renders topic icon', () => {
-    render(<TopicNode topic={mockTopic} />)
-    expect(screen.getByText('🔢')).toBeDefined()
-  })
-
   it('links to topic page', () => {
     render(<TopicNode topic={mockTopic} />)
     const link = screen.getByRole('link')
     expect(link.getAttribute('href')).toBe('/topic/arrays-hashing')
   })
 
-  it('shows progress', () => {
+  it('has indigo background styling', () => {
     render(<TopicNode topic={mockTopic} />)
-    expect(screen.getByText('0/9')).toBeDefined()
+    const link = screen.getByRole('link')
+    expect(link.className).toContain('bg-indigo-700')
   })
 
-  it('shows solved progress when partially complete', () => {
+  it('renders a progress bar', () => {
+    render(<TopicNode topic={mockTopic} />)
+    const progressBar = screen.getByRole('progressbar')
+    expect(progressBar).toBeDefined()
+  })
+
+  it('shows partial progress when some problems are solved', () => {
     render(<TopicNode topic={{ ...mockTopic, solved: 5 }} />)
-    expect(screen.getByText('5/9')).toBeDefined()
+    const progressBar = screen.getByRole('progressbar')
+    const widthPercent = (5 / 9) * 100
+    expect(progressBar.style.width).toBe(`${widthPercent}%`)
   })
 
-  it('uses yellow styling when partially complete', () => {
-    render(<TopicNode topic={{ ...mockTopic, solved: 3 }} />)
-    const link = screen.getByRole('link')
-    expect(link.className).toContain('border-yellow-500/70')
-  })
-
-  it('uses green styling when complete', () => {
+  it('shows full progress when all problems are solved', () => {
     render(<TopicNode topic={{ ...mockTopic, solved: 9 }} />)
-    const link = screen.getByRole('link')
-    expect(link.className).toContain('border-green-500/70')
+    const progressBar = screen.getByRole('progressbar')
+    expect(progressBar.style.width).toBe('100%')
   })
 })
