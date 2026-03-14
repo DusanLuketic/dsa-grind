@@ -39,7 +39,7 @@ function NavContent({ solvedCount, totalCount }: SidebarProps) {
       <div className="border-border border-b p-6">
         <h1 className="text-foreground text-xl font-bold">DSA Grind</h1>
         <p className="text-muted-foreground mt-1 text-xs">
-          NeetCode 150 Tracker
+          Problem Tracker
         </p>
       </div>
 

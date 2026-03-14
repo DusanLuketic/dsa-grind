@@ -18,6 +18,8 @@ model Topic {
   color        String
   order        Int
   description  String?
+  problemSet   String   @default("neetcode-150")
+  category     String?
   problems     Problem[]
   resources    Resource[]
   sessions     StudySession[]

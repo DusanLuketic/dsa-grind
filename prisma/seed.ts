@@ -17,6 +17,20 @@ interface NeetCodeProblem {
   pattern: string
 }
 
+interface CoreSkillsProblem {
+  title: string
+  slug: string
+  difficulty: string
+  topic: string
+}
+
+interface SystemDesignProblem {
+  title: string
+  slug: string
+  difficulty: string
+  topic: string
+}
+
 const patternToTopicId: Record<string, string> = {
   "Arrays & Hashing": "arrays-hashing",
   "Two Pointers": "two-pointers",
@@ -36,6 +50,20 @@ const patternToTopicId: Record<string, string> = {
   Intervals: "intervals",
   "Math & Geometry": "math-geometry",
   "Bit Manipulation": "bit-manipulation",
+}
+
+const coreSkillsTopicId: Record<string, string> = {
+  "Implement Data Structures": "cs-implement-data-structures",
+  "Sorting": "cs-sorting",
+  "Graphs": "cs-graphs",
+  "Dynamic Programming": "cs-dynamic-programming",
+  "Design Patterns": "cs-design-patterns",
+  "SQL": "cs-sql",
+  "Machine Learning": "cs-machine-learning",
+}
+
+const systemDesignTopicId: Record<string, string> = {
+  "Interview Questions": "sd-interview-questions",
 }
 
 const resources = [
@@ -78,14 +106,34 @@ function placeholders(count: number): string {
 async function main() {
   console.log("Seeding database...")
 
-  const dataPath = path.resolve(process.cwd(), "prisma", "data", "neetcode150.json")
-  const rawData = fs.readFileSync(dataPath, "utf-8")
-  const allProblems: NeetCodeProblem[] = JSON.parse(rawData)
-  const neetcode150 = allProblems.filter((problem) => problem.neetcode150)
+  // Load NeetCode 150 data
+  const nc150Path = path.resolve(process.cwd(), "prisma", "data", "neetcode150.json")
+  const nc150Raw = fs.readFileSync(nc150Path, "utf-8")
+  const allNc150: NeetCodeProblem[] = JSON.parse(nc150Raw)
+  const neetcode150 = allNc150.filter((problem) => problem.neetcode150)
+
+  // Load Core Skills data
+  const csPath = path.resolve(process.cwd(), "prisma", "data", "core-skills.json")
+  const csRaw = fs.readFileSync(csPath, "utf-8")
+  const coreSkills: CoreSkillsProblem[] = JSON.parse(csRaw)
+
+  // Load System Design data
+  const sdPath = path.resolve(process.cwd(), "prisma", "data", "system-design.json")
+  const sdRaw = fs.readFileSync(sdPath, "utf-8")
+  const systemDesign: SystemDesignProblem[] = JSON.parse(sdRaw)
 
   console.log(`Found ${neetcode150.length} NeetCode 150 problems`)
+  console.log(`Found ${coreSkills.length} Core Skills problems`)
+  console.log(`Found ${systemDesign.length} System Design problems`)
+
   if (neetcode150.length !== 150) {
     throw new Error(`Expected 150 NeetCode problems in snapshot, found ${neetcode150.length}`)
+  }
+  if (coreSkills.length !== 83) {
+    throw new Error(`Expected 83 Core Skills problems, found ${coreSkills.length}`)
+  }
+  if (systemDesign.length !== 19) {
+    throw new Error(`Expected 19 System Design problems, found ${systemDesign.length}`)
   }
 
   const db = new DatabaseSync(resolveDbPath())
@@ -93,22 +141,26 @@ async function main() {
   db.exec("BEGIN")
 
   try {
+    // Upsert all topics (now with problemSet and category)
     const upsertTopic = db.prepare(`
-      INSERT INTO "Topic" (id, title, slug, icon, color, "order", description)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO "Topic" (id, title, slug, icon, color, "order", description, "problemSet", category)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(id) DO UPDATE SET
         title = excluded.title,
         slug = excluded.slug,
         icon = excluded.icon,
         color = excluded.color,
         "order" = excluded."order",
-        description = excluded.description
+        description = excluded.description,
+        "problemSet" = excluded."problemSet",
+        category = excluded.category
     `)
 
     for (const topic of TOPICS) {
-      upsertTopic.run(topic.id, topic.title, topic.slug, topic.icon, topic.color, topic.order, topic.description)
+      upsertTopic.run(topic.id, topic.title, topic.slug, topic.icon, topic.color, topic.order, topic.description ?? null, topic.problemSet, topic.category ?? null)
     }
 
+    // Clean up orphaned topics
     const topicIds = TOPICS.map((topic) => topic.id)
     const topicIdPlaceholders = placeholders(topicIds.length)
     db.prepare(`UPDATE "StudySession" SET "topicId" = NULL WHERE "topicId" IS NOT NULL AND "topicId" NOT IN (${topicIdPlaceholders})`).run(...topicIds)
@@ -122,6 +174,7 @@ async function main() {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `)
 
+    // Seed NeetCode 150 problems
     const topicOrderCounters: Record<string, number> = {}
     for (const problem of neetcode150) {
       const topicId = patternToTopicId[problem.pattern] ?? "arrays-hashing"
@@ -144,6 +197,49 @@ async function main() {
       )
     }
 
+    // Seed Core Skills problems
+    for (const problem of coreSkills) {
+      const topicId = coreSkillsTopicId[problem.topic]
+      if (!topicId) throw new Error(`Unknown Core Skills topic: ${problem.topic}`)
+      topicOrderCounters[topicId] = (topicOrderCounters[topicId] ?? 0) + 1
+
+      const problemUrl = `https://neetcode.io/problems/${problem.slug}/question`
+      const youtubeUrl = `https://www.youtube.com/results?search_query=neetcode+${encodeURIComponent(problem.title)}`
+
+      insertProblem.run(
+        problem.title,
+        problem.slug,
+        problem.difficulty.toUpperCase(),
+        problemUrl,
+        youtubeUrl,
+        topicId,
+        problem.topic,
+        topicOrderCounters[topicId],
+      )
+    }
+
+    // Seed System Design problems
+    for (const problem of systemDesign) {
+      const topicId = systemDesignTopicId[problem.topic]
+      if (!topicId) throw new Error(`Unknown System Design topic: ${problem.topic}`)
+      topicOrderCounters[topicId] = (topicOrderCounters[topicId] ?? 0) + 1
+
+      const problemUrl = `https://neetcode.io/problems/${problem.slug}`
+      const youtubeUrl = `https://www.youtube.com/results?search_query=system+design+${encodeURIComponent(problem.title)}`
+
+      insertProblem.run(
+        problem.title,
+        problem.slug,
+        problem.difficulty.toUpperCase(),
+        problemUrl,
+        youtubeUrl,
+        topicId,
+        problem.topic,
+        topicOrderCounters[topicId],
+      )
+    }
+
+    // Seed resources
     db.exec("DELETE FROM \"Resource\"")
     const insertResource = db.prepare(`
       INSERT INTO "Resource" (title, url, type, source, description)
@@ -154,18 +250,19 @@ async function main() {
       insertResource.run(resource.title, resource.url, resource.type, resource.source, resource.description)
     }
 
+    // Verification
     const topics = Number(db.prepare('SELECT COUNT(*) AS count FROM "Topic"').get().count)
     const problems = Number(db.prepare('SELECT COUNT(*) AS count FROM "Problem"').get().count)
     const seededResources = Number(db.prepare('SELECT COUNT(*) AS count FROM "Resource"').get().count)
     const emptyYoutube = Number(db.prepare("SELECT COUNT(*) AS count FROM \"Problem\" WHERE \"youtubeUrl\" = ''").get().count)
 
-    console.log(`Topics: ${topics} (expected: 18)`)
-    console.log(`Problems: ${problems} (expected: 150)`)
+    console.log(`Topics: ${topics} (expected: 26)`)
+    console.log(`Problems: ${problems} (expected: 252)`)
     console.log(`Resources: ${seededResources} (expected: 17)`)
     console.log(`Problems with empty youtubeUrl: ${emptyYoutube} (expected: 0)`)
 
-    if (topics !== 18) throw new Error(`Expected 18 topics, got ${topics}`)
-    if (problems !== 150) throw new Error(`Expected 150 problems, got ${problems}`)
+    if (topics !== 26) throw new Error(`Expected 26 topics, got ${topics}`)
+    if (problems !== 252) throw new Error(`Expected 252 problems, got ${problems}`)
     if (seededResources !== 17) throw new Error(`Expected 17 resources, got ${seededResources}`)
     if (emptyYoutube !== 0) throw new Error(`Expected 0 empty youtubeUrl values, got ${emptyYoutube}`)
 

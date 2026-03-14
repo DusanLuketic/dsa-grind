@@ -1,0 +1,21 @@
+[
+  {"title": "Design LeetCode", "slug": "design-leetcode", "difficulty": "Easy", "topic": "Interview Questions"},
+  {"title": "Design URL Shortener", "slug": "design-url-shortener", "difficulty": "Easy", "topic": "Interview Questions"},
+  {"title": "Design Webhook", "slug": "design-webhook", "difficulty": "Easy", "topic": "Interview Questions"},
+  {"title": "Design Google Docs", "slug": "design-google-docs", "difficulty": "Medium", "topic": "Interview Questions"},
+  {"title": "Design Spotify Top K Songs", "slug": "design-spotify-top-k-songs", "difficulty": "Hard", "topic": "Interview Questions"},
+  {"title": "Design Yelp", "slug": "design-yelp", "difficulty": "Easy", "topic": "Interview Questions"},
+  {"title": "Design Rate Limiter", "slug": "design-rate-limiter", "difficulty": "Easy", "topic": "Interview Questions"},
+  {"title": "Design Pastebin", "slug": "design-pastebin", "difficulty": "Easy", "topic": "Interview Questions"},
+  {"title": "Design Realtime Monitoring System", "slug": "design-realtime-monitoring-system", "difficulty": "Easy", "topic": "Interview Questions"},
+  {"title": "Design Typeahead System", "slug": "design-typeahead-system", "difficulty": "Easy", "topic": "Interview Questions"},
+  {"title": "Design a Comment System", "slug": "design-a-comment-system", "difficulty": "Medium", "topic": "Interview Questions"},
+  {"title": "Design Twitter", "slug": "sd-design-twitter", "difficulty": "Medium", "topic": "Interview Questions"},
+  {"title": "Design WhatsApp", "slug": "design-whatsapp", "difficulty": "Hard", "topic": "Interview Questions"},
+  {"title": "Design Dropbox", "slug": "design-dropbox", "difficulty": "Hard", "topic": "Interview Questions"},
+  {"title": "Design YouTube", "slug": "design-youtube", "difficulty": "Hard", "topic": "Interview Questions"},
+  {"title": "Design Uber", "slug": "design-uber", "difficulty": "Hard", "topic": "Interview Questions"},
+  {"title": "Design Google Maps", "slug": "design-google-maps", "difficulty": "Hard", "topic": "Interview Questions"},
+  {"title": "Design TicketMaster", "slug": "design-ticketmaster", "difficulty": "Hard", "topic": "Interview Questions"},
+  {"title": "Design Netflix", "slug": "design-netflix", "difficulty": "Medium", "topic": "Interview Questions"}
+]

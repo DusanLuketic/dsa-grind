@@ -6,6 +6,7 @@ const mockStats = {
   totalSolved: 42,
   solvedByDifficulty: { easy: 20, medium: 15, hard: 7 },
   averageTime: 30,
+  totalProblems: 150,
 }
 
 describe('QuickStats', () => {
@@ -32,13 +33,13 @@ describe('QuickStats', () => {
   })
 
   it('shows 0 when no problems solved', () => {
-    render(<QuickStats stats={{ totalSolved: 0, solvedByDifficulty: { easy: 0, medium: 0, hard: 0 }, averageTime: 0 }} />)
+    render(<QuickStats stats={{ totalSolved: 0, solvedByDifficulty: { easy: 0, medium: 0, hard: 0 }, averageTime: 0, totalProblems: 150 }} />)
     expect(screen.getByText('0')).toBeDefined()
     expect(screen.getByText('0%')).toBeDefined()
   })
 
   it('shows -- for average time when zero', () => {
-    render(<QuickStats stats={{ totalSolved: 5, solvedByDifficulty: { easy: 5, medium: 0, hard: 0 }, averageTime: 0 }} />)
+    render(<QuickStats stats={{ totalSolved: 5, solvedByDifficulty: { easy: 5, medium: 0, hard: 0 }, averageTime: 0, totalProblems: 150 }} />)
     expect(screen.getByText('--')).toBeDefined()
   })
 })

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { cn, formatTime, getDifficultyColor, slugify } from '../utils'
+import { cn, formatTime, getDifficultyColor, slugify, getProblemLinkLabel } from '../utils'
 
 describe('cn', () => {
   it('merges class names', () => {
@@ -40,10 +40,34 @@ describe('slugify', () => {
   })
 })
 
+describe('getProblemLinkLabel', () => {
+  it('returns LeetCode label for leetcode URLs', () => {
+    expect(getProblemLinkLabel('https://leetcode.com/problems/two-sum/')).toBe('Open on LeetCode')
+  })
+  it('returns NeetCode label for neetcode URLs', () => {
+    expect(getProblemLinkLabel('https://neetcode.io/problems/dynamicArray/question')).toBe('Open on NeetCode')
+  })
+  it('returns fallback for invalid URLs', () => {
+    expect(getProblemLinkLabel('not-a-url')).toBe('Open Problem')
+  })
+})
+
 describe('TOPICS constant', () => {
-  it('has exactly 18 topics', async () => {
+  it('has exactly 26 topics', async () => {
     const { TOPICS } = await import('../constants')
-    expect(TOPICS.length).toBe(18)
+    expect(TOPICS.length).toBe(26)
+  })
+  it('has 18 neetcode-150 topics', async () => {
+    const { getTopicsByProblemSet } = await import('../constants')
+    expect(getTopicsByProblemSet('neetcode-150').length).toBe(18)
+  })
+  it('has 7 core-skills topics', async () => {
+    const { getTopicsByProblemSet } = await import('../constants')
+    expect(getTopicsByProblemSet('core-skills').length).toBe(7)
+  })
+  it('has 1 system-design topic', async () => {
+    const { getTopicsByProblemSet } = await import('../constants')
+    expect(getTopicsByProblemSet('system-design').length).toBe(1)
   })
 })
 

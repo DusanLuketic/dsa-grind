@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { ExternalLink } from 'lucide-react'
 import { updateProgress } from '@/lib/actions/progress'
-import { getDifficultyColor } from '@/lib/utils'
+import { getDifficultyColor, getProblemLinkLabel } from '@/lib/utils'
 import TopicFilters, { type FilterState } from './TopicFilters'
 import { STATUS_LABELS } from '@/lib/constants'
 
@@ -136,7 +136,7 @@ export default function ProblemTable({ problems }: { problems: Problem[] }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
-                title="Open on LeetCode"
+                title={getProblemLinkLabel(problem.leetcodeUrl)}
               >
                 <ExternalLink className="w-4 h-4" />
               </a>

@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { ExternalLink } from 'lucide-react'
-import { getDifficultyColor } from '@/lib/utils'
+import { getDifficultyColor, getProblemLinkLabel } from '@/lib/utils'
 
 interface ProblemInfoProps {
   problem: {
@@ -44,7 +44,7 @@ export default function ProblemInfo({ problem }: ProblemInfoProps) {
           className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors"
         >
           <ExternalLink className="w-3.5 h-3.5" />
-          Open on LeetCode
+          {getProblemLinkLabel(problem.leetcodeUrl)}
         </a>
         <a
           href={`https://www.youtube.com/results?search_query=neetcode+${encodeURIComponent(problem.title)}`}

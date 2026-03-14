@@ -28,3 +28,13 @@ export function getDifficultyColor(difficulty: string): string {
     default: return 'text-muted-foreground'
   }
 }
+
+export function getProblemLinkLabel(url: string): string {
+  try {
+    const hostname = new URL(url).hostname
+    if (hostname.includes('neetcode.io')) return 'Open on NeetCode'
+    return 'Open on LeetCode'
+  } catch {
+    return 'Open Problem'
+  }
+}

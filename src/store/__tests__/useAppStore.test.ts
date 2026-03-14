@@ -86,3 +86,26 @@ describe('useAppStore - timer', () => {
     expect(elapsed).toBeLessThan(4000)
   })
 })
+
+describe('useAppStore - activeProblemSet', () => {
+  beforeEach(() => {
+    useAppStore.setState({ activeProblemSet: 'neetcode-150' })
+  })
+
+  it('defaults to neetcode-150', () => {
+    const { result } = renderHook(() => useAppStore())
+    expect(result.current.activeProblemSet).toBe('neetcode-150')
+  })
+
+  it('updates with setActiveProblemSet', () => {
+    const { result } = renderHook(() => useAppStore())
+    act(() => result.current.setActiveProblemSet('core-skills'))
+    expect(result.current.activeProblemSet).toBe('core-skills')
+  })
+
+  it('can switch to system-design', () => {
+    const { result } = renderHook(() => useAppStore())
+    act(() => result.current.setActiveProblemSet('system-design'))
+    expect(result.current.activeProblemSet).toBe('system-design')
+  })
+})

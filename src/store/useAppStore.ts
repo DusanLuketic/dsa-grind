@@ -33,6 +33,8 @@ interface AppStore {
   pomodoroState: PomodoroState
   setPomodoroState: (update: Partial<PomodoroState>) => void
   pomodoroComplete: () => void
+  activeProblemSet: string
+  setActiveProblemSet: (set: string) => void
 }
 
 const noopStorage = {
@@ -109,6 +111,8 @@ export const useAppStore = create<AppStore>()(
         set((state) => ({
           pomodoroState: { ...state.pomodoroState, ...update },
         })),
+      activeProblemSet: 'neetcode-150',
+      setActiveProblemSet: (problemSet) => set({ activeProblemSet: problemSet }),
       pomodoroComplete: () => {
         const ps = get().pomodoroState
         const newCount = ps.completedSessions + 1
@@ -149,6 +153,7 @@ export const useAppStore = create<AppStore>()(
         sidebarOpen: state.sidebarOpen,
         timerState: state.timerState,
         pomodoroState: state.pomodoroState,
+        activeProblemSet: state.activeProblemSet,
       }),
     }
   )

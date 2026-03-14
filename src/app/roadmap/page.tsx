@@ -1,6 +1,6 @@
 import RoadmapFlow from '@/components/roadmap/RoadmapFlow'
 import { prisma } from '@/lib/db'
-import { TOPICS } from '@/lib/constants'
+import { getTopicsByProblemSet } from '@/lib/constants'
 
 export const metadata = { title: 'Roadmap - DSA Grind' }
 
@@ -35,7 +35,8 @@ export default async function RoadmapPage() {
     totalByTopic[topicCount.topicId] = topicCount._count.id
   }
 
-  const topicProgress = TOPICS.map((topic) => ({
+  const nc150Topics = getTopicsByProblemSet("neetcode-150")
+  const topicProgress = nc150Topics.map((topic) => ({
     id: topic.id,
     title: topic.title,
     slug: topic.slug,

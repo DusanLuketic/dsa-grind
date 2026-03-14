@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from 'next/font/google'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { Toaster } from '@/components/ui/sonner'
+import { prisma } from '@/lib/db'
 import './globals.css'
 
 const inter = Inter({
@@ -19,19 +20,24 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'DSA Grind',
-  description: 'Track your progress through 150 NeetCode problems',
+  description: 'Track your progress through NeetCode problems',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const [solvedCount, totalCount] = await Promise.all([
+    prisma.progress.count({ where: { status: 'SOLVED' } }),
+    prisma.problem.count(),
+  ])
+
   return (
     <html lang="en" className={`dark ${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="font-sans bg-background text-foreground min-h-screen">
         <div className="flex min-h-screen">
-          <Sidebar solvedCount={0} totalCount={150} />
+          <Sidebar solvedCount={solvedCount} totalCount={totalCount} />
           <main className="flex-1 overflow-auto lg:pl-[260px]">
             <Breadcrumbs />
             {children}

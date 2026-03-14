@@ -5,6 +5,7 @@ interface StatsData {
   totalSolved: number
   solvedByDifficulty: { easy: number; medium: number; hard: number }
   averageTime: number
+  totalProblems: number
 }
 
 export default function QuickStats({ stats }: { stats: StatsData }) {
@@ -18,7 +19,7 @@ export default function QuickStats({ stats }: { stats: StatsData }) {
         </CardHeader>
         <CardContent>
           <p className="text-3xl font-bold text-foreground">{stats.totalSolved}</p>
-          <p className="text-xs text-muted-foreground mt-1">out of 150</p>
+          <p className="text-xs text-muted-foreground mt-1">out of {stats.totalProblems}</p>
         </CardContent>
       </Card>
 
@@ -65,12 +66,12 @@ export default function QuickStats({ stats }: { stats: StatsData }) {
         </CardHeader>
         <CardContent>
           <p className="text-3xl font-bold text-foreground">
-            {stats.totalSolved > 0
-              ? `${Math.round((stats.totalSolved / 150) * 100)}%`
+            {stats.totalProblems > 0
+              ? `${Math.round((stats.totalSolved / stats.totalProblems) * 100)}%`
               : '0%'}
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            {150 - stats.totalSolved} remaining
+            {stats.totalProblems - stats.totalSolved} remaining
           </p>
         </CardContent>
       </Card>

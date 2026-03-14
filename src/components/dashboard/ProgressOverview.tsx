@@ -1,6 +1,13 @@
 import Link from 'next/link'
 import { Progress } from '@/components/ui/progress'
-import { TOPICS } from '@/lib/constants'
+
+interface TopicDisplay {
+  id: string
+  title: string
+  slug: string
+  icon: string
+  color: string
+}
 
 interface TopicProgress {
   topicId: string
@@ -9,15 +16,17 @@ interface TopicProgress {
 }
 
 export default function ProgressOverview({
+  topics,
   topicProgress,
 }: {
+  topics: TopicDisplay[]
   topicProgress: TopicProgress[]
 }) {
   const progressMap = new Map(topicProgress.map((p) => [p.topicId, p]))
 
   return (
     <div className="space-y-3">
-      {TOPICS.map((topic) => {
+      {topics.map((topic) => {
         const progress = progressMap.get(topic.id)
         const solved = progress?.solved ?? 0
         const total = progress?.total ?? 0

@@ -58,4 +58,16 @@ describe('ProblemInfo', () => {
     const badges = container.querySelectorAll('[data-slot="badge"]')
     expect(badges.length).toBe(1)
   })
+
+  it('renders NeetCode link label for neetcode URLs', () => {
+    render(
+      <ProblemInfo
+        problem={{
+          ...mockProblem,
+          leetcodeUrl: 'https://neetcode.io/problems/dynamicArray/question',
+        }}
+      />
+    )
+    expect(screen.getByText(/open on neetcode/i)).toBeDefined()
+  })
 })
